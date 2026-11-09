@@ -790,3 +790,25 @@ body :is(p,li,small,label,figcaption,dt,dd){font-family:var(--hand-font)}
  .hero h1.hero-nameplate .hero-romanized{font-size:7.5px;letter-spacing:.23em}
  .cover-cornerline{font-size:14px}
 }
+
+/* Larger supporting lines; the main-name sizes stay unchanged. */
+.hero h1.hero-nameplate .hero-name-block{top:calc(27% - .5775vw)}
+.hero h1.hero-nameplate :is(.hero-greeting,.hero-handle){font-size:clamp(17px,1.9vw,32px)}
+.hero h1.hero-nameplate .hero-jump{font-size:clamp(18px,1.9vw,32px)}
+.hero h1.hero-nameplate .hero-chinese{font-size:clamp(17px,1.85vw,31px)}
+.hero h1.hero-nameplate .hero-name-block .hero-japanese-pair{display:grid;grid-template-columns:max-content;gap:3px}
+.hero h1.hero-nameplate .hero-japanese{font-size:clamp(19px,2vw,34px)}
+/* Only the Japanese line sets the width; letters fill that exact width below it. */
+.hero h1.hero-nameplate .hero-name-block .hero-romanized{display:flex;justify-content:space-between;align-items:baseline;width:0;min-width:100%;font-size:clamp(9px,.78vw,13px);letter-spacing:0;line-height:1.1}
+.hero h1.hero-nameplate .hero-name-block .hero-roman-letter{display:block;flex:0 0 auto;margin:0;letter-spacing:0}
+.cover-cornerline{font-size:clamp(16px,1.55vw,26px)}
+@media(max-width:680px){
+ .hero h1.hero-nameplate .hero-name-block{top:calc(23% - 1.05vw)}
+ .hero h1.hero-nameplate :is(.hero-greeting,.hero-handle){font-size:4.2vw}
+ .hero h1.hero-nameplate .hero-jump{font-size:4.5vw}
+ .hero h1.hero-nameplate .hero-chinese{font-size:4.3vw}
+ .hero h1.hero-nameplate .hero-japanese{font-size:4.4vw}
+ .hero h1.hero-nameplate .hero-name-block .hero-japanese-pair{gap:2px}
+ .hero h1.hero-nameplate .hero-name-block .hero-romanized{font-size:8.5px}
+ .cover-cornerline{font-size:16px}
+}
