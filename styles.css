@@ -672,3 +672,24 @@ body:not(.is-content) .object-label{visibility:hidden!important}
 :is(.text-button,.project-external-button):nth-of-type(even)::before{transform:scaleX(-1)}
 :is(.text-button,.project-external-button):hover{background:#283b910a;color:#283b91}
 :is(.text-button,.project-external-button):focus-visible{outline-offset:5px}
+
+/* Overview actions sit above the heading in both project readers. */
+.project-reader-links{margin-top:25px}
+.project-reader-links .project-external-button{margin-bottom:0}
+.project-reader-links+.project-reader-section{margin-top:22px}
+/* The bevel uses the original alpha silhouette; the upper image boundary is hidden. */
+.liquid-rim{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:visible;clip-path:inset(52% 8px 0)}
+@keyframes pearl-twinkle{
+ 0%,38%,100%{opacity:0;transform:translate(-50%,-50%) scale(.35)}
+ 48%{opacity:.42;transform:translate(-50%,-50%) scale(.7)}
+ 60%{opacity:1;transform:translate(-50%,-50%) scale(1)}
+ 75%{opacity:.4;transform:translate(-50%,-50%) scale(.75)}
+ 86%{opacity:0;transform:translate(-50%,-50%) scale(.35)}
+}
+:is(.text-button,.project-external-button,.motion-toggle){transform-origin:50% 60%;transition:transform .18s ease,background .18s ease,color .18s ease}
+@media(hover:hover){:is(.text-button,.project-external-button,.motion-toggle):hover{transform:rotate(-3deg) translateY(-1px)}}
+:is(.text-button,.project-external-button,.motion-toggle):focus-visible{transform:rotate(-3deg)}
+:is(.text-button,.project-external-button,.motion-toggle):active{transform:rotate(-5deg) translateY(1px)}
+.motion-reduced .cover-stars svg:nth-child(n+23){display:none}
+.motion-reduced :is(.text-button,.project-external-button,.motion-toggle){transition:none}
+@media(prefers-reduced-motion:reduce){.cover-stars svg:nth-child(n+23){display:none}:is(.text-button,.project-external-button,.motion-toggle){transition:none}}

@@ -20,16 +20,19 @@ let dimensions = {};
 let scrollQueued = false;
 let lastDock = -1;
 const motionButton = document.querySelector('.motion-toggle');
-const coverStars=[...document.querySelectorAll('.cover-stars svg')];
+const starField=document.querySelector('.cover-stars');
+// Extra independent glints keep several visible around the foreground artwork.
+while(starField.children.length<72) starField.append(starField.firstElementChild.cloneNode(true));
+const coverStars=[...starField.querySelectorAll('svg')];
 function placeCoverStar(star) {
  star.style.setProperty('--x',`${3+Math.random()*94}%`);
- star.style.setProperty('--y',`${3+Math.random()*91}%`);
+ star.style.setProperty('--y',`${3+Math.random()*75}%`);
  star.style.setProperty('--size',`${9+Math.random()*14}px`);
 }
 
 coverStars.forEach(star=>{
  placeCoverStar(star);
- star.style.setProperty('--twinkle-duration',`${3.5+Math.random()*5}s`);
+ star.style.setProperty('--twinkle-duration',`${3+Math.random()*3.5}s`);
  star.style.animationDelay=`-${Math.random()*8}s`;
  star.addEventListener('animationiteration',()=>placeCoverStar(star));
 });
@@ -488,14 +491,16 @@ document.querySelectorAll('[data-project]').forEach(button=>button.addEventListe
  const moreImages=assets.images.slice(1).map(src=>`<img class="project-reader-extra" src="${esc(src)}" alt="${esc(p.title)} project image" loading="lazy">`).join('');
  const photoGallery=assets.gallery?.length?`<div class="project-photo-gallery"><div class="project-photo-masonry">${assets.gallery.map(photo=>`<img src="${esc(photo.src)}" alt="${esc(photo.alt)}" width="${photo.width}" height="${photo.height}" loading="lazy" decoding="async">`).join('')}</div></div>`:'';
  const video=assets.video?`<video class="project-reader-extra" controls playsinline src="${esc(assets.video)}"></video>`:'';
- const steam=key==='dissonant'?`<a class="project-external-button" href="https://store.steampowered.com/app/3878650/不完全调和少女/" target="_blank" rel="noopener noreferrer">Steam Page ↗</a>`:'';
+ const projectLink=key==='dissonant'?{url:'https://store.steampowered.com/app/3878650/不完全调和少女/',label:'Steam Page ↗'}:key==='line'?{url:'https://lightaswind.com/',label:'Official Website ↗'}:null;
+ const externalLink=projectLink?`<div class="project-reader-links"><a class="project-external-button" href="${esc(projectLink.url)}" target="_blank" rel="noopener noreferrer">${esc(projectLink.label)}</a></div>`:'';
  const designContent=assets.designSections?`${renderDesignSections(assets.designSections)}<section class="project-contributions" aria-labelledby="project-contributions-title"><h4 id="project-contributions-title" class="project-contributions-title">My Other Contributions</h4>${renderDesignSections(assets.contributionSections,true)}</section>`:'';
  const download=assets.download?`<a class="text-button" href="${esc(assets.download)}" download>Download playable build ↓</a>`:'';
  openDialog(`<div id="project-reader" class="project-reader" tabindex="0" role="region" aria-label="Scrollable project details">
  ${coverHtml}<article class="project-reader-body">
  <header class="project-reader-heading"><h2 id="dialog-title">${esc(p.title)}</h2>${details.date?`<p class="project-reader-date">${esc(details.date)}</p>`:''}</header>
+ ${externalLink}
  <section class="project-reader-section" aria-labelledby="project-overview-title"><h3 id="project-overview-title" class="project-reader-section-title">Overview</h3>
- ${details.overview||details.sections.length||details.genre||details.role||details.tools.length?`<div class="project-reader-columns"><div class="project-reader-summary">${steam}<p>${esc(details.overview)}</p>${details.sections.map(([heading,text])=>`<p><strong>${esc(heading)}</strong><br>${esc(text)}</p>`).join('')}${download}</div>
+ ${details.overview||details.sections.length||details.genre||details.role||details.tools.length?`<div class="project-reader-columns"><div class="project-reader-summary"><p>${esc(details.overview)}</p>${details.sections.map(([heading,text])=>`<p><strong>${esc(heading)}</strong><br>${esc(text)}</p>`).join('')}${download}</div>
  <aside class="project-reader-tools" aria-label="Project information"><h3>Project</h3><ul><li>${esc(details.genre)}</li><li>${esc(details.role)}</li></ul>${details.tools.length?`<h3>Tools</h3><ul>${details.tools.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>`:''}</aside></div>`:''}
  </section>
  ${designContent || `<section class="project-reader-section" aria-labelledby="project-images-title"><h3 id="project-images-title" class="project-reader-section-title">Gameplay Images</h3>
