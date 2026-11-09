@@ -912,3 +912,9 @@ body,.hero{background-color:var(--page-base)}
 /* Lighter CJK lettering and a unified serif across the cover's top line. */
 .hero h1.hero-nameplate :is(.hero-chinese,.hero-japanese){font-weight:300}
 .hero .cover-kicker{font-family:var(--cover-serif);font-weight:400}
+
+/* Restore the original Song-style Chinese name on the cover. */
+.hero h1.hero-nameplate .hero-chinese{font-family:'Noto Serif SC','Songti SC',serif;font-weight:400}
+
+/* Restore the Japanese cover line to its original Mincho-style serif. */
+.hero h1.hero-nameplate .hero-japanese{font-family:'Hiragino Mincho ProN','Yu Mincho','Noto Serif SC',serif;font-weight:400}
