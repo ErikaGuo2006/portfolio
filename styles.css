@@ -857,3 +857,54 @@ body :is(p,li,small,label,figcaption,dt,dd){font-family:var(--hand-font)}
  .is-content .site-header .wordmark{left:12px;top:3px;width:auto;height:auto;font:400 13px/1.1 var(--hand-font);letter-spacing:0}
  .is-content .site-header .wordmark:after{content:none}
 }
+
+/* White silhouette outlines separate all four cover objects from the liquid. */
+body:not(.is-content) .object-link .object-art{filter:drop-shadow(2px 0 0 #fff) drop-shadow(-2px 0 0 #fff) drop-shadow(0 2px 0 #fff) drop-shadow(0 -2px 0 #fff) drop-shadow(0 6px 8px #12246f20)}
+body:not(.is-content) .object-link:hover .object-art,body:not(.is-content) .object-link:focus-visible .object-art{filter:drop-shadow(2px 0 0 #fff) drop-shadow(-2px 0 0 #fff) drop-shadow(0 2px 0 #fff) drop-shadow(0 -2px 0 #fff) drop-shadow(2px 0 0 #fff0ad) drop-shadow(-2px 0 0 #fff0ad) drop-shadow(0 2px 0 #fff0ad) drop-shadow(0 -2px 0 #fff0ad) drop-shadow(0 8px 12px #25379228)}
+
+/* Shared white foundation removes the hard cover-to-content color seam. */
+:root{--page-base:#fff}
+body,.hero{background-color:var(--page-base)}
+.hero::before{content:'';position:absolute;inset:0;z-index:0;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'%3E%3Cpath d='M56 0H0V56' fill='none' stroke='%239fbddc' stroke-opacity='.62' stroke-width='1.5' stroke-dasharray='5 5'/%3E%3C/svg%3E");background-size:56px 56px;-webkit-mask-image:linear-gradient(to bottom,transparent 38%,#000 54%,#000 77%,transparent 100%);mask-image:linear-gradient(to bottom,transparent 38%,#000 54%,#000 77%,transparent 100%)}
+/* Fade the portrait's cropped hem, droplets and grid into the identical page base. */
+.hero::after{content:'';position:absolute;inset:auto 0 0;height:12%;z-index:5;pointer-events:none;background:linear-gradient(to bottom,transparent,var(--page-base))}
+.cover-kicker{position:absolute;top:29px;left:50%;transform:translateX(-50%);z-index:4;margin:0;color:#fffdf3;font:400 clamp(14px,1.65vw,27px)/1.2 var(--hand-font);letter-spacing:.035em;white-space:nowrap;pointer-events:none}
+.cover-outline-stars{position:absolute;inset:0;z-index:1;overflow:hidden;pointer-events:none}
+.cover-outline-star{position:absolute;left:var(--x);top:var(--y);width:var(--size);aspect-ratio:1;transform:translate(-50%,-50%);background:#fffdf3;opacity:.88;-webkit-mask-position:center;mask-position:center;-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+.outline-star-a{-webkit-mask-image:url('assets/decorations/outline-star-b.png');mask-image:url('assets/decorations/outline-star-b.png')}
+.outline-star-b{-webkit-mask-image:url('assets/decorations/outline-star-a.png');mask-image:url('assets/decorations/outline-star-a.png')}
+@media(max-width:680px){
+ .cover-kicker{top:55px;width:100%;padding:0 12px;font-size:14px;text-align:center;letter-spacing:.02em}
+ .hero::before{background-size:40px 40px}
+ .hero::after{height:14%}
+ .cover-outline-star{width:calc(var(--size) * .65);opacity:.72}
+ .cover-outline-star:nth-child(2){left:30%;top:15%}
+ .cover-outline-star:nth-child(3){left:89%;top:12%}
+ .cover-outline-star:nth-child(6){left:8%;top:47%}
+}
+
+/* A broader display serif with sturdier fine strokes for the cover lettering. */
+@font-face{font-family:'DM Serif Display';src:url('assets/fonts/DMSerifDisplay-Regular.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
+:root{--cover-serif:'DM Serif Display',Georgia,serif}
+.hero h1.hero-nameplate :is(.hero-main-name,.hero-greeting,.hero-handle,.hero-jump){font-family:var(--cover-serif);font-weight:400}
+.hero h1.hero-nameplate .hero-main-name{font-size:clamp(82px,9.6vw,192px)}
+.cover-cornerline,.wordmark{font-family:var(--cover-serif);font-weight:400}
+.hero h1.hero-nameplate .hero-chinese{font-family:'DengXian','PingFang SC','Microsoft YaHei',sans-serif;font-weight:400}
+.hero h1.hero-nameplate .hero-japanese{font-family:'Hiragino Kaku Gothic ProN','Hiragino Sans','Yu Gothic','Meiryo',sans-serif;font-weight:400}
+@media(max-width:1000px) and (min-width:681px){.hero h1.hero-nameplate .hero-main-name{font-size:9.6vw}}
+@media(max-width:680px){
+ .hero h1.hero-nameplate .hero-main-name{font-size:12.8vw}
+ .is-content .site-header .wordmark{font-family:var(--cover-serif)}
+}
+
+/* Expand the sturdier serif horizontally while keeping portrait-side anchors fixed. */
+.hero h1.hero-nameplate .hero-main-name{font-size:clamp(86px,10.2vw,204px);transform:scaleX(1.16)}
+.hero h1.hero-nameplate :is(.hero-greeting,.hero-handle,.hero-jump){transform:scaleX(1.06)}
+.hero-name-block-left :is(.hero-main-name,.hero-greeting,.hero-jump){transform-origin:right center}
+.hero-name-block-right :is(.hero-main-name,.hero-handle){transform-origin:left center}
+@media(max-width:1000px) and (min-width:681px){.hero h1.hero-nameplate .hero-main-name{font-size:10vw}}
+@media(max-width:680px){
+ .hero h1.hero-nameplate .hero-main-name{font-size:13.6vw}
+ .hero-name-block-left :is(.hero-main-name,.hero-greeting,.hero-jump){transform-origin:left center}
+ .hero-name-block-right :is(.hero-main-name,.hero-handle){transform-origin:right center}
+}
