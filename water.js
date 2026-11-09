@@ -112,7 +112,7 @@ function createGpu(canvas, surface, options) {
  const du=locations(display,['u_state','u_texel','u_resolution','u_time','u_aspect','u_caustics','u_strength']);
  const vertices=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,vertices);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),gl.STATIC_DRAW);
  let width=1,height=1,sw=1,sh=1,targets=[],read=0,raf=0,last=0,elapsed=0,accumulator=0;
- let visible=true,reduced=false,lost=false;
+ let visible=true,reduced=false,lost=false,suspended=false;
  const drops=[];
  function use(p){gl.useProgram(p);gl.bindBuffer(gl.ARRAY_BUFFER,vertices);const a=gl.getAttribLocation(p,'a_position');gl.enableVertexAttribArray(a);gl.vertexAttribPointer(a,2,gl.FLOAT,false,0,0);}
  function texture(){
@@ -131,11 +131,11 @@ function createGpu(canvas, surface, options) {
  }
  function resize(w,h){
   w=Math.max(1,Math.round(w));h=Math.max(1,Math.round(h));
-  const dpr=Math.min(devicePixelRatio||1,innerWidth<681?1.25:1.5);
+  const dpr=Math.min(devicePixelRatio||1,1,Math.sqrt(1600000/(w*h)));
   const rw=Math.round(w*dpr),rh=Math.round(h*dpr);
   if(width===w&&height===h&&canvas.width===rw&&canvas.height===rh&&targets.length)return;
   width=w;height=h;canvas.width=rw;canvas.height=rh;
-  const grid=innerWidth<681?224:320;
+  const grid=innerWidth<681?192:256;
   if(w>=h){sw=grid;sh=Math.max(96,Math.round(grid*h/w));}else{sh=grid;sw=Math.max(96,Math.round(grid*w/h));}
   targets.forEach(t=>{gl.deleteTexture(t.tex);gl.deleteFramebuffer(t.fb);});targets=[texture(),texture()];read=0;last=0;accumulator=0;
   draw();resume();
@@ -159,26 +159,28 @@ function createGpu(canvas, surface, options) {
   gl.drawArrays(gl.TRIANGLE_STRIP,0,4);
  }
  function frame(time){
-  raf=0;if(!visible||reduced||document.hidden||lost)return;
+  raf=0;if(!visible||reduced||suspended||document.hidden||lost)return;
+  if(last&&time-last<32.5){raf=requestAnimationFrame(frame);return;}
   const dt=last?Math.min((time-last)/1000,.035):1/60;last=time;elapsed+=dt*.28;accumulator+=dt;
   let steps=0;while(accumulator>=1/120&&steps<4){step(drops.shift());accumulator-=1/120;steps++;}
   draw();raf=requestAnimationFrame(frame);
  }
  function pause(){cancelAnimationFrame(raf);raf=0;last=0;}
- function resume(){if(!raf&&visible&&!reduced&&!document.hidden&&!lost&&targets.length)raf=requestAnimationFrame(frame);}
+ function resume(){if(!raf&&visible&&!reduced&&!suspended&&!document.hidden&&!lost&&targets.length)raf=requestAnimationFrame(frame);}
  function setReduced(value){reduced=value;canvas.dataset.motion=value?'still':'animated';if(value){pause();clear();draw();}else resume();}
  const observer=new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;canvas.dataset.active=String(visible);if(visible)resume();else{pause();clear();}},{threshold:0});observer.observe(surface);
  document.addEventListener('visibilitychange',()=>{if(document.hidden)pause();else resume();});
  canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();lost=true;pause();canvas.style.opacity='0';canvas.dataset.renderer='context-lost';});
  canvas.addEventListener('webglcontextrestored',()=>location.reload(),{once:true});
- canvas.dataset.renderer='webgl';canvas.dataset.motion='animated';
+ canvas.dataset.renderer='webgl';canvas.dataset.motion='animated';canvas.dataset.fpsLimit='30';
  const r=surface.getBoundingClientRect();resize(r.width,r.height);
- return {resize,disturb,setReduced};
+ function setSuspended(value){suspended=value;canvas.dataset.suspended=String(value);if(value)pause();else resume();}
+ return {resize,disturb,setReduced,setSuspended};
 }
 // Overdamped surface fallback with pearly highlights and embedded mica.
 function createCpu(canvas,surface){
  const ctx=canvas.getContext('2d',{alpha:false});const buffer=document.createElement('canvas');const bctx=buffer.getContext('2d',{alpha:false});
- let w=1,h=1,gw=1,gh=1,current,previous,next,image,raf=0,last=0,time=0,reduced=false,visible=true;
+ let w=1,h=1,gw=1,gh=1,current,previous,next,image,raf=0,last=0,time=0,reduced=false,visible=true,suspended=false;
  function resize(width,height){
   if(w===Math.round(width)&&h===Math.round(height)&&current)return;
   w=Math.max(1,Math.round(width));h=Math.max(1,Math.round(height));canvas.width=w;canvas.height=h;
@@ -221,14 +223,15 @@ function createCpu(canvas,surface){
   }
   bctx.putImageData(image,0,0);ctx.imageSmoothingEnabled=true;ctx.drawImage(buffer,0,0,w,h);
  }
- function frame(now){raf=0;if(reduced||!visible||document.hidden)return;if(now-last<33){resume();return;}last=now;time+=.009;step();step();draw();resume();}
+ function frame(now){raf=0;if(reduced||suspended||!visible||document.hidden)return;if(now-last<33){resume();return;}last=now;time+=.009;step();step();draw();resume();}
  function pause(){cancelAnimationFrame(raf);raf=0;}
- function resume(){if(!raf&&!reduced&&visible&&!document.hidden)raf=requestAnimationFrame(frame);}
+ function resume(){if(!raf&&!reduced&&!suspended&&visible&&!document.hidden)raf=requestAnimationFrame(frame);}
  function setReduced(value){reduced=value;canvas.dataset.motion=value?'still':'animated';if(value){pause();current.fill(0);previous.fill(0);next.fill(0);draw();}else resume();}
  const observer=new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;canvas.dataset.active=String(visible);if(visible)resume();else pause();});observer.observe(surface);
  document.addEventListener('visibilitychange',()=>{if(document.hidden)pause();else resume();});
  canvas.dataset.renderer='canvas2d';const r=surface.getBoundingClientRect();resize(r.width,r.height);
- return {resize,disturb,setReduced};
+ function setSuspended(value){suspended=value;canvas.dataset.suspended=String(value);if(value)pause();else resume();}
+ return {resize,disturb,setReduced,setSuspended};
 }
 window.createPortfolioWater=(canvas,surface,options={})=>{
  try{return createGpu(canvas,surface,options);}catch(error){

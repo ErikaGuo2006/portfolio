@@ -50,6 +50,7 @@ let chapterBounds = [];
 let dimensions = {};
 let scrollQueued = false;
 let lastDock = -1;
+let lastNavProgress = -1;
 // Reveal a block once; transforms never affect the layout or scroll measurements.
 const mainRevealSelector='.chapter-heading,.about-copy>.mini-label,.about-copy>h3,.about-bio>p,.education,.about-copy>.skill-tags,.signature-palette,.project-feature,.game-card,.gallery-toolbar,.art-card,.next-chapter,.contact-layout,.contact-footer';
 const detailRevealSelector='.project-reader-heading,.project-reader-links,.project-reader-section-title,.project-reader-summary>p,.project-reader-tools,.project-design-title,.project-design-description,.project-design-column img,.project-photo-masonry img,.project-level-title,.project-level-description,.project-level-comparison img';
@@ -91,6 +92,7 @@ function setMotion(value) {
  motionButton.setAttribute('aria-pressed', String(value));
  motionButton.textContent = value ? 'Enable motion' : 'Reduce motion';
  waterEffect.setReduced(value);
+ lastNavProgress=-1;
  if(value)petAnimation?.cancel();
  if(value)document.querySelectorAll('.scroll-reveal').forEach(el=>el.classList.add('is-revealed'));
  scheduleUpdate();
@@ -100,7 +102,8 @@ media.addEventListener('change', e => setMotion(e.matches));
 function measure() {
  const mobile = innerWidth <= 680;
  const navHeight = mobile ? 100 : 114;
- dimensions = { width: innerWidth, hero: hero.offsetHeight, navHeight, mobile };
+ dimensions = { width: innerWidth, hero: hero.offsetHeight, navHeight, mobile, pageHeight:document.documentElement.scrollHeight };
+ lastNavProgress=-1;
  chapterBounds = chapters.map(s => ({top:s.offsetTop, height:s.offsetHeight}));
  const rect = water.getBoundingClientRect();
  waterEffect.resize(rect.width,rect.height);
@@ -120,6 +123,7 @@ function updateScroll() {
  const start = mobile ? [[.15,.69],[.32,.83],[.68,.83],[.85,.69]] : [[.18,.68],[.32,.88],[.70,.84],[.83,.72]];
  const spacing = mobile ? Math.min(94,(width-32)/4) : 114;
  const float = p===0 && !reduced ? 1 : 0;
+ if(p!==lastNavProgress){
  navLinks.forEach((link,i) => {
   const sx=width*start[i][0], sy=height*start[i][1];
   const ex=width/2+(i-1.5)*spacing, ey=mobile?48:52;
@@ -128,10 +132,12 @@ function updateScroll() {
   link.style.transform=`translate(${x}px,${cy}px) translate(-50%,-50%) scale(${scale}) rotate(${(1-p)*[-12,9,-7,9][i]}deg)`;
   link.style.setProperty('--float',float);
  });
+ lastNavProgress=p;
+ }
  let next = -1;
  const probe = y + navHeight + Math.min(160, innerHeight*.21);
  chapterBounds.forEach((b,i) => { if(probe>=b.top) next=i; });
- if(y+innerHeight >= document.documentElement.scrollHeight-4) next=3;
+ if(y+innerHeight >= dimensions.pageHeight-4) next=3;
  if(next !== activeIndex || updateScroll.previousDocked !== (p>.85)) {
   activeIndex=next; updateScroll.previousDocked=p>.85;
   navLinks.forEach((link,i) => {
@@ -188,6 +194,16 @@ addEventListener('wheel',e=>{
 const water=document.getElementById('water-surface');
 const canvas=document.getElementById('ripples');
 const waterEffect=window.createPortfolioWater(canvas,water,data.water||{});
+// Cover animations must not compete with the reader, offscreen content or hidden tabs.
+let coverVisible=true;
+function updateCoverActivity(){
+ const paused=!coverVisible||document.hidden||document.getElementById('detail-dialog').open;
+ root.classList.toggle('cover-paused',paused);waterEffect.setSuspended(paused);
+}
+const coverVisibilityObserver=new IntersectionObserver(entries=>{coverVisible=entries[0].isIntersecting;updateCoverActivity();},{threshold:0});
+coverVisibilityObserver.observe(hero);
+document.addEventListener('visibilitychange',updateCoverActivity);
+
 let lastPointer=null,lastDisturbance=0;
 function disturbWater(e,strong=false){
  if(reduced||scrollY>dimensions.hero||e.target.closest('a,button'))return;
@@ -354,7 +370,7 @@ function openDialog(html,kicker,opener) {
  dialogOpener=opener;dialog.classList.toggle('artwork-dialog',html.includes('artwork-detail'));dialog.classList.toggle('project-dialog',html.includes('project-reader'));document.getElementById('dialog-kicker').textContent=kicker;
  detailRevealObserver?.disconnect();
  document.getElementById('dialog-content').innerHTML=html;
- dialog.showModal();document.body.style.overflow='hidden';dialog.scrollTop=0;projectScrollCleanup=setupProjectScrollbar();projectVideoCleanup=setupProjectVideo();
+ dialog.showModal();updateCoverActivity();document.body.style.overflow='hidden';dialog.scrollTop=0;projectScrollCleanup=setupProjectScrollbar();projectVideoCleanup=setupProjectVideo();
  const reader=dialog.querySelector('.project-reader');
  if(reader)detailRevealObserver=revealContent(reader,detailRevealSelector,reader);
  document.querySelector('.dialog-close').focus({preventScroll:true});
@@ -362,7 +378,7 @@ function openDialog(html,kicker,opener) {
 function closeDialog(){dialog.close();}
 document.querySelector('.dialog-close').addEventListener('click',closeDialog);
 dialog.addEventListener('click',e=>{const r=dialog.getBoundingClientRect();if(e.target===dialog&&(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom))closeDialog();});
-dialog.addEventListener('close',()=>{projectVideoCleanup?.();projectVideoCleanup=null;projectScrollCleanup?.();projectScrollCleanup=null;document.body.style.overflow='';dialogOpener?.focus({preventScroll:true});scheduleUpdate();});
+dialog.addEventListener('close',()=>{updateCoverActivity();projectVideoCleanup?.();projectVideoCleanup=null;projectScrollCleanup?.();projectScrollCleanup=null;document.body.style.overflow='';dialogOpener?.focus({preventScroll:true});scheduleUpdate();});
 gallery.addEventListener('click',e=>{
  const button=e.target.closest('[data-art]');if(!button)return;
  const index=Number(button.dataset.art),art=data.illustrations[index];

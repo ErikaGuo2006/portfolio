@@ -918,3 +918,8 @@ body,.hero{background-color:var(--page-base)}
 
 /* Restore the Japanese cover line to its original Mincho-style serif. */
 .hero h1.hero-nameplate .hero-japanese{font-family:'Hiragino Mincho ProN','Yu Mincho','Noto Serif SC',serif;font-weight:400}
+
+/* Reuse the pre-rendered bevel instead of recalculating full-screen SVG filters. */
+.liquid-rim{filter:none}
+.cover-stars svg{will-change:auto}
+.cover-paused .cover-stars svg{animation-play-state:paused}
