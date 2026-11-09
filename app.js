@@ -461,11 +461,13 @@ const projectDetails={
     ]
   }
 };
-// Explicit masonry columns keep each desktop column to one or two images.
+// Artwork keeps its natural proportions in at most two masonry columns.
 function renderDesignSections(sections, contribution=false) {
  return (sections||[]).map(section=>{
   const columns=[];
-  for(let i=0;i<section.images.length;i+=2) columns.push(section.images.slice(i,i+2));
+  const columnCount=Math.min(2,Math.ceil(section.images.length/2));
+  const perColumn=Math.ceil(section.images.length/columnCount);
+  for(let i=0;i<section.images.length;i+=perColumn) columns.push(section.images.slice(i,i+perColumn));
   const heading=contribution?'h5':'h4';
   return `<section class="project-design-section" aria-labelledby="design-${esc(section.id)}">
    <${heading} id="design-${esc(section.id)}" class="project-design-title">${esc(section.title)}</${heading}>
@@ -486,7 +488,7 @@ document.querySelectorAll('[data-project]').forEach(button=>button.addEventListe
  const moreImages=assets.images.slice(1).map(src=>`<img class="project-reader-extra" src="${esc(src)}" alt="${esc(p.title)} project image" loading="lazy">`).join('');
  const photoGallery=assets.gallery?.length?`<div class="project-photo-gallery"><div class="project-photo-masonry">${assets.gallery.map(photo=>`<img src="${esc(photo.src)}" alt="${esc(photo.alt)}" width="${photo.width}" height="${photo.height}" loading="lazy" decoding="async">`).join('')}</div></div>`:'';
  const video=assets.video?`<video class="project-reader-extra" controls playsinline src="${esc(assets.video)}"></video>`:'';
- const steam=key==='dissonant'?`<a class="project-external-button" href="https://store.steampowered.com/app/3878650/不完全调和少女/" target="_blank" rel="noopener noreferrer" lang="zh-CN">Steam 上的 不完全调和少女 ↗</a>`:'';
+ const steam=key==='dissonant'?`<a class="project-external-button" href="https://store.steampowered.com/app/3878650/不完全调和少女/" target="_blank" rel="noopener noreferrer">Steam Page ↗</a>`:'';
  const designContent=assets.designSections?`${renderDesignSections(assets.designSections)}<section class="project-contributions" aria-labelledby="project-contributions-title"><h4 id="project-contributions-title" class="project-contributions-title">My Other Contributions</h4>${renderDesignSections(assets.contributionSections,true)}</section>`:'';
  const download=assets.download?`<a class="text-button" href="${esc(assets.download)}" download>Download playable build ↓</a>`:'';
  openDialog(`<div id="project-reader" class="project-reader" tabindex="0" role="region" aria-label="Scrollable project details">
