@@ -762,3 +762,31 @@ body :is(p,li,small,label,figcaption,dt,dd){font-family:var(--hand-font)}
 }
 .motion-reduced .site-pet,.motion-reduced .site-pet img{transition:none}
 @media(prefers-reduced-motion:reduce){.site-pet,.site-pet img{transition:none}}
+
+/* Tight name stacks: the two large names dominate, aliases sit close beneath. */
+.hero h1.hero-nameplate .hero-name-block{position:absolute;top:27%;display:flex;flex-direction:column;gap:3px;width:max-content;margin:0}
+.hero-name-block-left{right:63%;align-items:flex-end;text-align:right}
+.hero-name-block-right{left:65%;align-items:flex-start;text-align:left}
+.hero h1.hero-nameplate .hero-name-block span{position:static;inset:auto;display:block;margin:0;white-space:nowrap}
+.hero h1.hero-nameplate .hero-main-name{font-size:clamp(86px,10.2vw,204px);line-height:.9;letter-spacing:-.055em;font-weight:500;margin-block:1px}
+.hero h1.hero-nameplate :is(.hero-greeting,.hero-handle){font-size:clamp(13px,1.35vw,22px);line-height:1.05;font-weight:400;letter-spacing:.01em}
+.hero h1.hero-nameplate .hero-jump{font-size:clamp(14px,1.45vw,24px);line-height:1.1;font-weight:400;letter-spacing:.01em}
+.hero h1.hero-nameplate .hero-chinese{font-size:clamp(14px,1.4vw,23px);line-height:1.15;letter-spacing:.03em}
+.hero h1.hero-nameplate .hero-japanese-pair{display:flex;flex-direction:column;gap:2px;width:max-content;align-items:flex-start}
+.hero h1.hero-nameplate .hero-japanese{font-size:clamp(15px,1.55vw,25px);line-height:1.1;letter-spacing:.01em}
+.hero h1.hero-nameplate .hero-romanized{font-size:clamp(8px,.64vw,11px);line-height:1.05;letter-spacing:.34em;font-weight:400}
+.cover-cornerline{font-size:clamp(14px,1.25vw,22px)}
+@media(max-width:1000px) and (min-width:681px){.hero-name-block-left{right:64%}.hero-name-block-right{left:65%}.hero h1.hero-nameplate .hero-main-name{font-size:10vw}}
+@media(max-width:680px){
+ .hero h1.hero-nameplate .hero-name-block{top:23%;gap:2px}
+ .hero-name-block-left{left:4%;right:auto;align-items:flex-start;text-align:left}
+ .hero-name-block-right{left:auto;right:4%;align-items:flex-end;text-align:right}
+ .hero h1.hero-nameplate .hero-main-name{font-size:14vw;line-height:.9;margin-block:0}
+ .hero h1.hero-nameplate :is(.hero-greeting,.hero-handle){font-size:3.2vw}
+ .hero h1.hero-nameplate .hero-jump{font-size:3.5vw}
+ .hero h1.hero-nameplate .hero-chinese{font-size:3.4vw}
+ .hero h1.hero-nameplate .hero-japanese{font-size:3.6vw}
+ .hero h1.hero-nameplate .hero-japanese-pair{align-items:flex-end;gap:1px}
+ .hero h1.hero-nameplate .hero-romanized{font-size:7.5px;letter-spacing:.23em}
+ .cover-cornerline{font-size:14px}
+}

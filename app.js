@@ -7,7 +7,6 @@ const icon = name => `<span class="nav-icon-pair" aria-hidden="true"><img class=
 document.querySelectorAll('[data-icon]').forEach(el => el.innerHTML = icon(el.dataset.icon));
 const navLinks = [...document.querySelectorAll('.object-link')];
 const chapters = [...document.querySelectorAll('.chapter')];
-const names = ['ABOUT ME','TEAM PROJECTS','SOLO & SMALL TEAM','ILLUSTRATIONS'];
 const root = document.documentElement;
 const hero = document.querySelector('.hero');
 const stage = document.querySelector('.character-stage');
@@ -140,10 +139,6 @@ function updateScroll() {
    link.classList.toggle('is-muted',p>.85 && !current);
    if(current) link.setAttribute('aria-current','location'); else link.removeAttribute('aria-current');
   });
-  if(next>=0) {
-   document.getElementById('rail-number').textContent=`0${next+1} / 04`;
-   document.getElementById('rail-label').textContent=names[next];
-  }
  }
  const selected = chapterBounds[Math.max(next,0)];
  const progress = selected ? clamp((y-selected.top+navHeight)/(Math.max(1,selected.height-innerHeight+navHeight))) : 0;
