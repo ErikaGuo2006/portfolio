@@ -832,3 +832,18 @@ body :is(p,li,small,label,figcaption,dt,dd){font-family:var(--hand-font)}
  .hero h1.hero-nameplate .hero-japanese{font-size:5vw}
  .hero h1.hero-nameplate .hero-name-block .hero-romanized{font-size:9.5px}
 }
+
+/* SLEEPWALK studies: original sketch left, corresponding game images right. */
+.project-level-study{margin-top:34px}
+.project-level-title{font:700 clamp(20px,2.8cqw,28px)/1.25 var(--editorial-serif);margin:0 0 12px;letter-spacing:0;text-transform:none}
+.project-level-description{font-family:var(--hand-font);font-size:clamp(14px,1.65cqw,18px);line-height:1.65;margin:0 0 18px;max-width:70ch}
+.project-level-comparison{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;align-items:start}
+.project-level-comparison figure{margin:0;min-width:0;display:grid;gap:5px}
+.project-level-comparison figcaption{font-family:var(--hand-font);font-size:14px;line-height:1.4;padding:0 0 3px;color:#6576a9}
+.project-level-comparison img{display:block;width:100%;height:auto;border-radius:5px}
+@container(max-width:560px){.project-level-comparison{grid-template-columns:1fr;row-gap:18px}}
+
+/* Clearer subsection headings inside every project's overview copy. */
+.project-reader-summary>p>strong:first-child{display:block;font-family:var(--hand-font);font-size:clamp(20px,2.3cqw,25px);font-weight:600;line-height:1.25;margin-bottom:8px;color:#283b91}
+.project-reader-summary>p>strong:first-child+br{display:none}
+@container(max-width:560px){.project-reader-summary>p>strong:first-child{font-size:20px;margin-bottom:7px}}

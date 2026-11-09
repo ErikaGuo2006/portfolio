@@ -52,7 +52,7 @@ let scrollQueued = false;
 let lastDock = -1;
 // Reveal a block once; transforms never affect the layout or scroll measurements.
 const mainRevealSelector='.chapter-heading,.about-copy>.mini-label,.about-copy>h3,.about-bio>p,.education,.about-copy>.skill-tags,.signature-palette,.project-feature,.game-card,.gallery-toolbar,.art-card,.next-chapter,.contact-layout,.contact-footer';
-const detailRevealSelector='.project-reader-heading,.project-reader-links,.project-reader-section-title,.project-reader-summary>p,.project-reader-tools,.project-design-title,.project-design-description,.project-design-column img,.project-photo-masonry img';
+const detailRevealSelector='.project-reader-heading,.project-reader-links,.project-reader-section-title,.project-reader-summary>p,.project-reader-tools,.project-design-title,.project-design-description,.project-design-column img,.project-photo-masonry img,.project-level-title,.project-level-description,.project-level-comparison img';
 let detailRevealObserver=null;
 function revealContent(scope, selector, scrollRoot=null) {
  const elements=[...scope.querySelectorAll(selector)].filter(el=>!el.classList.contains('scroll-reveal'));
@@ -532,6 +532,20 @@ function renderDesignSections(sections, contribution=false) {
   </section>`;
  }).join('');
 }
+function renderLevelStudies(assets,details) {
+ const picture=photo=>`<img src="${esc(photo.src)}" alt="${esc(photo.alt)}" width="${photo.width}" height="${photo.height}" loading="lazy" decoding="async">`;
+ return assets.levelMedia.map(level=>{
+  const description=details.sections.find(([heading])=>heading===level.heading)?.[1]||'';
+  return `<section class="project-level-study" aria-labelledby="sleepwalk-${esc(level.id)}">
+   <h4 id="sleepwalk-${esc(level.id)}" class="project-level-title">${esc(level.heading)}</h4>
+   <p class="project-level-description">${esc(description)}</p>
+   <div class="project-level-comparison">
+    <figure class="project-level-sketch"><figcaption>Design sketch</figcaption>${picture(level.sketch)}</figure>
+    <figure class="project-level-gameplay"><figcaption>In-game</figcaption>${level.screenshots.map(picture).join('')}</figure>
+   </div>
+  </section>`;
+ }).join('')+renderDesignSections([{id:'sleepwalk-visual-ui',title:'Visual & UI Design',description:details.sections.find(([heading])=>heading==='Visual & UI Design')?.[1]||'',images:assets.visualGallery}]);
+}
 document.querySelectorAll('[data-project]').forEach(button=>button.addEventListener('click',()=>{
  const key=button.dataset.project,p=projects[key],assets=data.projects[key],details=projectDetails[key];
  const cover=assets.images[0];
@@ -546,16 +560,18 @@ document.querySelectorAll('[data-project]').forEach(button=>button.addEventListe
  const projectLink=key==='dissonant'?{url:'https://store.steampowered.com/app/3878650/不完全调和少女/',label:'Steam Page ↗'}:key==='line'?{url:'https://lightaswind.com/',label:'Official Website ↗'}:null;
  const externalLink=projectLink?`<div class="project-reader-links"><a class="project-external-button" href="${esc(projectLink.url)}" target="_blank" rel="noopener noreferrer">${esc(projectLink.label)}</a></div>`:'';
  const designContent=assets.designSections?`${renderDesignSections(assets.designSections)}<section class="project-contributions" aria-labelledby="project-contributions-title"><h4 id="project-contributions-title" class="project-contributions-title">My Other Contributions</h4>${renderDesignSections(assets.contributionSections,true)}</section>`:'';
+ const summarySections=assets.levelMedia?details.sections.filter(([heading])=>!assets.levelMedia.some(level=>level.heading===heading)&&heading!=='Visual & UI Design'):details.sections;
+ const levelContent=assets.levelMedia?renderLevelStudies(assets,details):'';
  const download=assets.download?`<a class="text-button" href="${esc(assets.download)}" download>Download playable build ↓</a>`:'';
  openDialog(`<div id="project-reader" class="project-reader" tabindex="0" role="region" aria-label="Scrollable project details">
  ${coverHtml}<article class="project-reader-body">
  <header class="project-reader-heading"><h2 id="dialog-title">${esc(p.title)}</h2>${details.date?`<p class="project-reader-date">${esc(details.date)}</p>`:''}</header>
  ${externalLink}
  <section class="project-reader-section" aria-labelledby="project-overview-title"><h3 id="project-overview-title" class="project-reader-section-title">Overview</h3>
- ${details.overview||details.sections.length||details.genre||details.role||details.tools.length?`<div class="project-reader-columns"><div class="project-reader-summary"><p>${esc(details.overview)}</p>${details.sections.map(([heading,text])=>`<p><strong>${esc(heading)}</strong><br>${esc(text)}</p>`).join('')}${download}</div>
+ ${details.overview||details.sections.length||details.genre||details.role||details.tools.length?`<div class="project-reader-columns"><div class="project-reader-summary"><p>${esc(details.overview)}</p>${summarySections.map(([heading,text])=>`<p><strong>${esc(heading)}</strong><br>${esc(text)}</p>`).join('')}${download}</div>
  <aside class="project-reader-tools" aria-label="Project information"><h3>Project</h3><ul><li>${esc(details.genre)}</li><li>${esc(details.role)}</li></ul>${details.tools.length?`<h3>Tools</h3><ul>${details.tools.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>`:''}</aside></div>`:''}
  </section>
- ${designContent || `<section class="project-reader-section" aria-labelledby="project-images-title"><h3 id="project-images-title" class="project-reader-section-title">Gameplay Images</h3>
+ ${designContent || levelContent || `<section class="project-reader-section" aria-labelledby="project-images-title"><h3 id="project-images-title" class="project-reader-section-title">Gameplay Images</h3>
  ${photoGallery}${moreImages}${video}</section>`}
  </article></div><div class="project-scrollbar" role="scrollbar" tabindex="0" aria-label="Project scroll" aria-orientation="vertical" aria-controls="project-reader" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span aria-hidden="true"></span></div>`,p.role.toUpperCase(),button);
 }));
