@@ -722,7 +722,7 @@ body :is(p,li,small,label,figcaption,dt,dd){font-family:var(--hand-font)}
 .timeline-item>span{font-size:12px}
 .object-label{font-size:14px}
 .object-label small{font-size:10px}
-.palette-color>span{font-family:var(--hand-font)}
+
 @media(max-width:680px){.cover-cornerline{font-family:var(--hand-font)}}
 
 .project-reader-tools li{font-family:var(--hand-font)}

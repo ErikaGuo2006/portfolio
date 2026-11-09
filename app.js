@@ -338,7 +338,7 @@ gallery.addEventListener('click',e=>{
  const button=e.target.closest('[data-art]');if(!button)return;
  const index=Number(button.dataset.art),art=data.illustrations[index];
  const picture=`<img class="detail-art" src="${esc(art.src)}" alt="${esc(art.alt||art.title)}" width="${art.width}" height="${art.height}">`;
- openDialog(`<div class="artwork-detail"><h2 id="dialog-title" class="sr-only">${esc(art.title)}</h2><div class="artwork-picture">${picture}</div><p class="artwork-overlay-date">00-00-2000</p></div>`, '',button);
+ openDialog(`<div class="artwork-detail"><h2 id="dialog-title" class="sr-only">${esc(art.title)}</h2><div class="artwork-picture">${picture}</div><p class="artwork-overlay-date">${art.date?`<time datetime="${esc(art.date)}">${esc(art.date.split('-').reverse().join('-'))}</time>`:'00-00-2000'}</p></div>`, '',button);
 });
 const projectDetails={
   "dissonant": {
