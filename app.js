@@ -19,6 +19,24 @@ let chapterBounds = [];
 let dimensions = {};
 let scrollQueued = false;
 let lastDock = -1;
+// Reveal a block once; transforms never affect the layout or scroll measurements.
+const mainRevealSelector='.chapter-heading,.about-copy>.mini-label,.about-copy>h3,.about-bio>p,.education,.about-copy>.skill-tags,.signature-palette,.project-feature,.game-card,.gallery-toolbar,.art-card,.next-chapter,.contact-layout,.contact-footer';
+const detailRevealSelector='.project-reader-heading,.project-reader-links,.project-reader-section-title,.project-reader-summary>p,.project-reader-tools,.project-design-title,.project-design-description,.project-design-column img,.project-photo-masonry img';
+let detailRevealObserver=null;
+function revealContent(scope, selector, scrollRoot=null) {
+ const elements=[...scope.querySelectorAll(selector)].filter(el=>!el.classList.contains('scroll-reveal'));
+ if(reduced||!('IntersectionObserver' in window))return null;
+ const observer=new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{
+   if(!entry.isIntersecting)return;
+   entry.target.classList.add('is-revealed');observer.unobserve(entry.target);
+  });
+ },{root:scrollRoot,rootMargin:'0px 0px -20px 0px',threshold:.04});
+ elements.forEach(el=>{el.classList.add('scroll-reveal');observer.observe(el);});
+ return observer;
+}
+document.addEventListener('focusin',e=>e.target.closest('.scroll-reveal')?.classList.add('is-revealed'));
+
 const motionButton = document.querySelector('.motion-toggle');
 const starField=document.querySelector('.cover-stars');
 // Extra independent glints keep several visible around the foreground artwork.
@@ -42,6 +60,7 @@ function setMotion(value) {
  motionButton.setAttribute('aria-pressed', String(value));
  motionButton.textContent = value ? 'Enable motion' : 'Reduce motion';
  waterEffect.setReduced(value);
+ if(value)document.querySelectorAll('.scroll-reveal').forEach(el=>el.classList.add('is-revealed'));
  scheduleUpdate();
 }
 motionButton.addEventListener('click', () => setMotion(!reduced));
@@ -164,6 +183,7 @@ function renderGallery(filter='commissioned') {
  const category=artCategories[filter];
  const items=data.illustrations.map((art,index)=>({...art,index})).filter(a=>a.category===filter);
  gallery.innerHTML=items.map(a=>`<button class="art-card" data-art="${a.index}" aria-label="Preview ${esc(a.title)}"><span class="art-image" style="aspect-ratio:${a.width} / ${a.height}"><img src="${esc(a.src)}" alt="${esc(a.alt||a.title)}" width="${a.width}" height="${a.height}" loading="lazy" decoding="async"></span></button>`).join('');
+ revealContent(gallery,'.art-card');
  gallery.hidden=items.length===0;
  gallery.setAttribute('aria-label',category.label+' gallery');
  galleryEmpty.hidden=items.length>0;
@@ -303,8 +323,11 @@ function openDialog(html,kicker,opener) {
  projectVideoCleanup?.();projectVideoCleanup=null;
  projectScrollCleanup?.();projectScrollCleanup=null;
  dialogOpener=opener;dialog.classList.toggle('artwork-dialog',html.includes('artwork-detail'));dialog.classList.toggle('project-dialog',html.includes('project-reader'));document.getElementById('dialog-kicker').textContent=kicker;
+ detailRevealObserver?.disconnect();
  document.getElementById('dialog-content').innerHTML=html;
  dialog.showModal();document.body.style.overflow='hidden';dialog.scrollTop=0;projectScrollCleanup=setupProjectScrollbar();projectVideoCleanup=setupProjectVideo();
+ const reader=dialog.querySelector('.project-reader');
+ if(reader)detailRevealObserver=revealContent(reader,detailRevealSelector,reader);
  document.querySelector('.dialog-close').focus({preventScroll:true});
 }
 function closeDialog(){dialog.close();}
@@ -511,6 +534,6 @@ document.querySelectorAll('[data-project]').forEach(button=>button.addEventListe
 const resizeObserver=new ResizeObserver(()=>measure());
 resizeObserver.observe(document.querySelector('main'));
 addEventListener('resize',measure,{passive:true});
-renderGallery();measure();setMotion(reduced);
+renderGallery();revealContent(document.querySelector('.content-world'),mainRevealSelector);measure();setMotion(reduced);
 if(location.hash && document.getElementById(location.hash.slice(1))) requestAnimationFrame(()=>goTo(location.hash.slice(1),'none'));
 })();
