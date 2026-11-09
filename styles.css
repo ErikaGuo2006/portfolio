@@ -849,4 +849,4 @@ body :is(p,li,small,label,figcaption,dt,dd){font-family:var(--hand-font)}
 @container(max-width:560px){.project-reader-summary>p>strong:first-child{font-size:20px;margin-bottom:7px}}
 
 /* SLEEPWALK's per-level and visual headings sit below the overview subheading tier. */
-.project-level-title,#design-sleepwalk-visual-ui{font-family:var(--hand-font);font-size:clamp(18px,1.9cqw,21px);font-weight:600;line-height:1.25;letter-spacing:0;text-transform:none}
+.project-level-title,.project-design-title,.project-contributions-title,.project-contributions .project-design-title{font-family:var(--hand-font);font-size:clamp(18px,1.9cqw,21px);font-weight:600;line-height:1.25;letter-spacing:0;text-transform:none}
