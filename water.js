@@ -86,11 +86,11 @@ void main(){
  // Mica flakes are embedded in the liquid. Their facet normals follow the
  // surface, so they glint as it tilts, rather than blinking on a timer.
  vec2 material=vec2(uv.x*u_aspect,uv.y)+drift/7.2+slope*.006;
- vec2 cell=material*(u_resolution.y/2.6);
+ vec2 cell=material*(u_resolution.y/3.1);
  vec2 id=floor(cell),local=fract(cell);
  float seed=hash(id+91.);
  vec2 center=vec2(hash(id+17.),hash(id+49.))*.72+.14;
- float size=mix(.07,.20,hash(id+33.));
+ float size=mix(.08,.22,hash(id+33.));
  float flake=1.-smoothstep(size*.35,size,length(local-center));
  vec2 tilt=vec2(hash(id+5.),hash(id+13.))-.5;
  vec3 facet=normalize(vec3(normal.xy+tilt*.6,normal.z));

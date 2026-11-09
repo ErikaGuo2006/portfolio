@@ -636,3 +636,29 @@ body:not(.is-content) .object-label{visibility:hidden!important}
 .cover-sigils > span{display:flex;gap:8px}
 .cover-sigils svg{display:block;width:23px;height:23px}
 @media(max-width:680px){.cover-sigils > span{gap:6px}.cover-sigils svg{width:16px;height:16px}}
+
+/* Dissonant Girls: grouped artwork, with natural image proportions. */
+.project-external-button{display:inline-flex;align-items:center;justify-content:center;max-width:100%;padding:11px 18px;margin:0 0 20px;border:1px solid currentColor;border-radius:999px;font-size:14px;line-height:1.5;transition:background .2s,color .2s}
+.project-external-button:hover{background:#283b91;color:#fff}
+.project-design-section{margin-top:30px}
+.project-design-title{font:700 clamp(20px,2.8cqw,28px)/1.25 var(--editorial-serif);margin:0 0 14px}
+.project-design-description{max-width:65ch;font-size:clamp(14px,1.65cqw,18px);line-height:1.65;margin:0 0 20px}
+.project-design-masonry{display:grid;grid-template-columns:repeat(var(--gallery-columns),minmax(0,1fr));gap:5px;align-items:start}
+.project-design-column{display:grid;gap:5px;min-width:0}
+.project-design-column img{display:block;width:100%;height:auto;border-radius:5px}
+.project-contributions{margin-top:38px;padding-top:26px;border-top:1px dashed #748bd677}
+.project-contributions-title{font:900 clamp(21px,3cqw,30px)/1.25 var(--editorial-serif);margin:0 0 24px;letter-spacing:-.025em}
+.project-contributions .project-design-title{font-size:clamp(18px,2.5cqw,24px)}
+@container (max-width:560px){.project-design-masonry{grid-template-columns:1fr}}
+
+/* Small, brief pearl glints; every cycle starts and ends in darkness. */
+.cover-stars svg{opacity:0;animation:pearl-twinkle var(--twinkle-duration,6s) linear infinite;will-change:opacity,transform}
+@keyframes pearl-twinkle{
+ 0%,62%,100%{opacity:0;transform:translate(-50%,-50%) scale(.35)}
+ 70%{opacity:.38;transform:translate(-50%,-50%) scale(.7)}
+ 76%{opacity:.95;transform:translate(-50%,-50%) scale(1)}
+ 84%{opacity:.22;transform:translate(-50%,-50%) scale(.65)}
+ 90%{opacity:0;transform:translate(-50%,-50%) scale(.35)}
+}
+.motion-reduced .cover-stars svg{animation:none;opacity:.35;will-change:auto}
+@media(prefers-reduced-motion:reduce){.cover-stars svg{animation:none;opacity:.35;will-change:auto}}

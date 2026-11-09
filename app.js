@@ -20,6 +20,19 @@ let dimensions = {};
 let scrollQueued = false;
 let lastDock = -1;
 const motionButton = document.querySelector('.motion-toggle');
+const coverStars=[...document.querySelectorAll('.cover-stars svg')];
+function placeCoverStar(star) {
+ star.style.setProperty('--x',`${3+Math.random()*94}%`);
+ star.style.setProperty('--y',`${3+Math.random()*91}%`);
+ star.style.setProperty('--size',`${9+Math.random()*14}px`);
+}
+
+coverStars.forEach(star=>{
+ placeCoverStar(star);
+ star.style.setProperty('--twinkle-duration',`${3.5+Math.random()*5}s`);
+ star.style.animationDelay=`-${Math.random()*8}s`;
+ star.addEventListener('animationiteration',()=>placeCoverStar(star));
+});
 function setMotion(value) {
  reduced = value;
  root.classList.toggle('motion-reduced', value);
@@ -319,10 +332,6 @@ const projectDetails={
       [
         "Gameplay",
         "Schedule management and daily-life simulation shape the band’s journey. A blackjack-inspired song-arrangement system brings a strategic twist to making music."
-      ],
-      [
-        "UI Design",
-        "I designed interfaces around objects on a bedroom desk and a livehouse table. Everyday items carry the menus and controls, grounding schedule planning and performance preparation in the game world."
       ]
     ]
   },
@@ -452,6 +461,20 @@ const projectDetails={
     ]
   }
 };
+// Explicit masonry columns keep each desktop column to one or two images.
+function renderDesignSections(sections, contribution=false) {
+ return (sections||[]).map(section=>{
+  const columns=[];
+  for(let i=0;i<section.images.length;i+=2) columns.push(section.images.slice(i,i+2));
+  const heading=contribution?'h5':'h4';
+  return `<section class="project-design-section" aria-labelledby="design-${esc(section.id)}">
+   <${heading} id="design-${esc(section.id)}" class="project-design-title">${esc(section.title)}</${heading}>
+   ${section.description?`<p class="project-design-description">${esc(section.description)}</p>`:''}
+   ${section.url?`<a class="project-external-button" href="${esc(section.url)}" target="_blank" rel="noopener noreferrer">${esc(section.linkLabel)}</a>`:''}
+   <div class="project-design-masonry" style="--gallery-columns:${columns.length}">${columns.map(column=>`<div class="project-design-column">${column.map(photo=>`<img src="${esc(photo.src)}" alt="${esc(photo.alt)}" width="${photo.width}" height="${photo.height}" loading="lazy" decoding="async">`).join('')}</div>`).join('')}</div>
+  </section>`;
+ }).join('');
+}
 document.querySelectorAll('[data-project]').forEach(button=>button.addEventListener('click',()=>{
  const key=button.dataset.project,p=projects[key],assets=data.projects[key],details=projectDetails[key];
  const cover=assets.images[0];
@@ -463,16 +486,18 @@ document.querySelectorAll('[data-project]').forEach(button=>button.addEventListe
  const moreImages=assets.images.slice(1).map(src=>`<img class="project-reader-extra" src="${esc(src)}" alt="${esc(p.title)} project image" loading="lazy">`).join('');
  const photoGallery=assets.gallery?.length?`<div class="project-photo-gallery"><div class="project-photo-masonry">${assets.gallery.map(photo=>`<img src="${esc(photo.src)}" alt="${esc(photo.alt)}" width="${photo.width}" height="${photo.height}" loading="lazy" decoding="async">`).join('')}</div></div>`:'';
  const video=assets.video?`<video class="project-reader-extra" controls playsinline src="${esc(assets.video)}"></video>`:'';
+ const steam=key==='dissonant'?`<a class="project-external-button" href="https://store.steampowered.com/app/3878650/不完全调和少女/" target="_blank" rel="noopener noreferrer" lang="zh-CN">Steam 上的 不完全调和少女 ↗</a>`:'';
+ const designContent=assets.designSections?`${renderDesignSections(assets.designSections)}<section class="project-contributions" aria-labelledby="project-contributions-title"><h4 id="project-contributions-title" class="project-contributions-title">My Other Contributions</h4>${renderDesignSections(assets.contributionSections,true)}</section>`:'';
  const download=assets.download?`<a class="text-button" href="${esc(assets.download)}" download>Download playable build ↓</a>`:'';
  openDialog(`<div id="project-reader" class="project-reader" tabindex="0" role="region" aria-label="Scrollable project details">
  ${coverHtml}<article class="project-reader-body">
  <header class="project-reader-heading"><h2 id="dialog-title">${esc(p.title)}</h2>${details.date?`<p class="project-reader-date">${esc(details.date)}</p>`:''}</header>
  <section class="project-reader-section" aria-labelledby="project-overview-title"><h3 id="project-overview-title" class="project-reader-section-title">Overview</h3>
- ${details.overview||details.sections.length||details.genre||details.role||details.tools.length?`<div class="project-reader-columns"><div class="project-reader-summary"><p>${esc(details.overview)}</p>${details.sections.map(([heading,text])=>`<p><strong>${esc(heading)}</strong><br>${esc(text)}</p>`).join('')}${download}</div>
+ ${details.overview||details.sections.length||details.genre||details.role||details.tools.length?`<div class="project-reader-columns"><div class="project-reader-summary">${steam}<p>${esc(details.overview)}</p>${details.sections.map(([heading,text])=>`<p><strong>${esc(heading)}</strong><br>${esc(text)}</p>`).join('')}${download}</div>
  <aside class="project-reader-tools" aria-label="Project information"><h3>Project</h3><ul><li>${esc(details.genre)}</li><li>${esc(details.role)}</li></ul>${details.tools.length?`<h3>Tools</h3><ul>${details.tools.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>`:''}</aside></div>`:''}
  </section>
- <section class="project-reader-section" aria-labelledby="project-images-title"><h3 id="project-images-title" class="project-reader-section-title">Gameplay Images</h3>
- ${photoGallery}${moreImages}${video}</section>
+ ${designContent || `<section class="project-reader-section" aria-labelledby="project-images-title"><h3 id="project-images-title" class="project-reader-section-title">Gameplay Images</h3>
+ ${photoGallery}${moreImages}${video}</section>`}
  </article></div><div class="project-scrollbar" role="scrollbar" tabindex="0" aria-label="Project scroll" aria-orientation="vertical" aria-controls="project-reader" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span aria-hidden="true"></span></div>`,p.role.toUpperCase(),button);
 }));
 // 同时支持图片尺寸变化、窗口缩放和筛选之后的章节定位。
