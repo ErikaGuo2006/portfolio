@@ -727,3 +727,38 @@ body :is(p,li,small,label,figcaption,dt,dd){font-family:var(--hand-font)}
 
 .project-reader-tools li{font-family:var(--hand-font)}
 @media(max-width:680px){.object-label{font-size:11px}.object-label small{font-size:8px}}
+
+/* The name and aliases frame the portrait, following the supplied cover sketch. */
+.hero h1.hero-nameplate{display:block!important;position:absolute;inset:0;width:100%;height:100%;margin:0;transform:none;z-index:2;color:#fffdf3;pointer-events:none;white-space:normal;font:400 24px/1.1 'Bodoni Moda',Didot,Georgia,serif;letter-spacing:0}
+.hero-nameplate>span{position:absolute;display:block;margin:0;white-space:nowrap}
+.hero-main-name{font-family:'Bodoni Moda',Didot,Georgia,serif;font-size:clamp(70px,8.5vw,170px);font-weight:500;line-height:1;letter-spacing:-.055em}
+.hero-name-left{right:63%;top:29%}
+.hero-name-right{left:65%;top:29%}
+.hero-greeting{right:63%;top:20%;font-size:clamp(18px,2.1vw,36px);letter-spacing:.04em}
+.hero-handle{left:65%;top:20%;font-size:clamp(22px,2.8vw,48px);font-weight:500;letter-spacing:-.035em}
+.hero-jump{right:63%;top:49%;font-size:clamp(23px,3vw,52px);font-weight:500;letter-spacing:-.02em}
+.hero-chinese{right:63%;top:57%;font-family:'Noto Serif SC','Songti SC',serif;font-size:clamp(22px,2.4vw,42px);font-weight:400;letter-spacing:.08em}
+.hero-japanese{left:65%;top:49%;font-family:'Hiragino Mincho ProN','Yu Mincho','Noto Serif SC',serif;font-size:clamp(23px,2.4vw,42px);font-weight:400;letter-spacing:.02em}
+.hero-romanized{left:65%;top:57%;font-family:var(--hand-font);font-size:clamp(13px,1.6vw,26px);font-weight:400;letter-spacing:.12em}
+/* Transparent pet sprites use the same yellow silhouette outline as the nav art. */
+.site-pet{position:fixed;left:max(14px,env(safe-area-inset-left));bottom:max(16px,env(safe-area-inset-bottom));width:138px;height:138px;padding:0;border:0;background:none;z-index:34;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(18px);transition:opacity .25s,transform .25s,visibility .25s;touch-action:manipulation}
+.site-pet.is-visible{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0)}
+.site-pet img{display:block;width:100%;height:100%;object-fit:contain;pointer-events:none;user-select:none;transition:filter .2s}
+.site-pet:hover img,.site-pet:focus-visible img{filter:drop-shadow(2px 0 0 #fff0ad) drop-shadow(-2px 0 0 #fff0ad) drop-shadow(0 2px 0 #fff0ad) drop-shadow(0 -2px 0 #fff0ad) drop-shadow(0 5px 7px #25379220)}
+.site-pet:focus-visible{outline:2px dashed #c79e3b;outline-offset:1px;border-radius:16px}
+@media(max-width:1000px) and (min-width:681px){.hero-main-name{font-size:8vw}.hero-name-left,.hero-greeting,.hero-jump,.hero-chinese{right:65%}.hero-name-right,.hero-handle,.hero-japanese,.hero-romanized{left:66%}.hero-romanized{font-size:1.55vw}}
+@media(max-width:680px){
+ .hero h1.hero-nameplate{z-index:4}
+ .hero-main-name{font-size:12vw}
+ .hero-name-left{left:4%;right:auto;top:23%}
+ .hero-name-right{left:auto;right:4%;top:23%}
+ .hero-greeting{left:5%;right:auto;top:15%;font-size:4vw}
+ .hero-handle{left:auto;right:5%;top:15%;font-size:5vw}
+ .hero-jump{left:6%;right:auto;top:32%;font-size:5.5vw}
+ .hero-chinese{left:6%;right:auto;top:38%;font-size:4.5vw}
+ .hero-japanese{left:auto;right:5%;top:32%;font-size:4.5vw}
+ .hero-romanized{left:auto;right:5%;top:38%;font-size:2.7vw;letter-spacing:.07em}
+ .site-pet{left:6px;bottom:max(10px,env(safe-area-inset-bottom));width:92px;height:92px}
+}
+.motion-reduced .site-pet,.motion-reduced .site-pet img{transition:none}
+@media(prefers-reduced-motion:reduce){.site-pet,.site-pet img{transition:none}}

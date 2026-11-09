@@ -13,6 +13,38 @@ const hero = document.querySelector('.hero');
 const stage = document.querySelector('.character-stage');
 const character = document.getElementById('hero-character');
 const media = matchMedia('(prefers-reduced-motion: reduce)');
+// Website companion: each click restarts the two-stage expression sequence.
+const pet=document.getElementById('site-pet');
+const petImage=pet.querySelector('img');
+const petStatus=document.getElementById('pet-status');
+const petStates={idle:{src:'assets/pet/idle.png',alt:'Sleeping Atako companion',status:'Sleeping'},excited:{src:'assets/pet/excited.png',alt:'Atako winks happily',status:'Hello!'},awkward:{src:'assets/pet/awkward.png',alt:'Atako looks bashful with a sweat drop',status:'Still here…'}};
+Object.values(petStates).forEach(state=>{const preload=new Image();preload.src=state.src;});
+let petTimer=0,petAnimation=null;
+function setPetState(state,animate=true) {
+ clearTimeout(petTimer);petTimer=0;
+ const next=petStates[state];pet.dataset.state=state;
+ petImage.src=next.src;petImage.alt=next.alt;petStatus.textContent=next.status;
+ pet.setAttribute('aria-label',state==='idle'?'Wake up Atako':'Say hello to Atako again');
+ petAnimation?.cancel();
+ if(animate&&!reduced)petAnimation=petImage.animate([
+  {opacity:0,transform:'translateY(14px) scale(.9)'},
+  {opacity:1,transform:'translateY(-5px) scale(1.04)',offset:.65},
+  {opacity:1,transform:'translateY(0) scale(1)'}
+ ],{duration:340,easing:'cubic-bezier(.2,.7,.3,1)'});
+ if(state==='excited')petTimer=setTimeout(()=>setPetState('awkward'),2000);
+ if(state==='awkward')petTimer=setTimeout(()=>setPetState('idle'),5000);
+}
+pet.addEventListener('click',()=>setPetState('excited'));
+// Pointer, key and scroll activity postpones the first idle expression change.
+function postponePetIdle(){if(pet.dataset.state==='excited'){clearTimeout(petTimer);petTimer=setTimeout(()=>setPetState('awkward'),2000);}}
+for(const event of ['pointermove','pointerdown','keydown','wheel','scroll'])addEventListener(event,postponePetIdle,{passive:true});
+function updatePetVisibility(visible) {
+ if(pet.classList.contains('is-visible')===visible)return;
+ pet.classList.toggle('is-visible',visible);pet.tabIndex=visible?0:-1;
+ pet.setAttribute('aria-hidden',String(!visible));
+ if(!visible)setPetState('idle',false);
+}
+
 let reduced = media.matches;
 let activeIndex = -1;
 let chapterBounds = [];
@@ -60,6 +92,7 @@ function setMotion(value) {
  motionButton.setAttribute('aria-pressed', String(value));
  motionButton.textContent = value ? 'Enable motion' : 'Reduce motion';
  waterEffect.setReduced(value);
+ if(value)petAnimation?.cancel();
  if(value)document.querySelectorAll('.scroll-reveal').forEach(el=>el.classList.add('is-revealed'));
  scheduleUpdate();
 }
@@ -84,7 +117,8 @@ function updateScroll() {
  const dock = clamp((p-.65)/.35);
  if(dock !== lastDock) { root.style.setProperty('--dock',dock); lastDock = dock; }
  document.body.classList.toggle('is-content',p>.85);
- const start = mobile ? [[.15,.69],[.32,.83],[.68,.83],[.85,.69]] : [[.18,.66],[.34,.57],[.70,.60],[.83,.71]];
+ updatePetVisibility(y>=height-navHeight);
+ const start = mobile ? [[.15,.69],[.32,.83],[.68,.83],[.85,.69]] : [[.18,.68],[.32,.88],[.70,.84],[.83,.72]];
  const spacing = mobile ? Math.min(94,(width-32)/4) : 114;
  const float = p===0 && !reduced ? 1 : 0;
  navLinks.forEach((link,i) => {

@@ -5,8 +5,8 @@
 <meta name="description" content="Atako Uesugi — Illustration, game development, game art, and UI/UX.">
 <title>Atako Uesugi</title>
 <link rel="icon" href="assets/favicon.svg?v=atako" type="image/svg+xml">
-<link rel="stylesheet" href="styles.css?v=20261108-palette-commission-dates">
-<script src="content.js?v=20261108-palette-commission-dates" defer></script><script src="water.js?v=20261108-hand-type-reveal-smooth" defer></script><script src="app.js?v=20261108-palette-commission-dates" defer></script>
+<link rel="stylesheet" href="styles.css?v=20261108-companion-nameplate">
+<script src="content.js?v=20261108-palette-commission-dates" defer></script><script src="water.js?v=20261108-hand-type-reveal-smooth" defer></script><script src="app.js?v=20261108-companion-nameplate" defer></script>
 <link rel="stylesheet" href="editor.css?v=20261103-contact-compact">
 <script src="editor.js?v=20261104-layout-recovery" defer></script>
 </head>
@@ -25,6 +25,10 @@
 <a class="object-link" href="#games" data-section="games" aria-label="Iris · Solo &amp; Small-Team Projects"><span class="object-art" data-icon="iris"></span><span class="object-label"><small>03</small> SOLO &amp; SMALL TEAM</span></a>
 <a class="object-link" href="#illustrations" data-section="illustrations" aria-label="Apple · Illustrations"><span class="object-art" data-icon="apple"></span><span class="object-label"><small>04</small> ILLUSTRATIONS</span></a>
 </nav>
+<button id="site-pet" class="site-pet" type="button" tabindex="-1" aria-hidden="true" aria-label="Wake up Atako" data-state="idle">
+ <img src="assets/pet/idle.png" alt="Sleeping Atako companion" width="500" height="500" draggable="false">
+ <span class="sr-only" aria-live="polite" id="pet-status">Sleeping</span>
+</button>
 <main>
 <section id="home" class="hero" aria-labelledby="hero-title">
 <div class="blue-field" id="water-surface"><canvas id="ripples" aria-hidden="true"></canvas><div class="water-glow" aria-hidden="true"></div></div>
@@ -56,15 +60,16 @@
 <img class="liquid-rim" src="assets/hero-liquid-smooth.svg" alt="" aria-hidden="true">
 <div class="cover-stars" aria-hidden="true"><svg viewBox="0 0 100 100" style="--x:4%;--y:25%;--size:42px"><path d="M50 0 C54 40 60 46 100 50 C60 54 54 60 50 100 C46 60 40 54 0 50 C40 46 46 40 50 0Z"/></svg><svg viewBox="0 0 100 100" style="--x:8%;--y:38%;--size:22px"><path d="M50 0 C54 40 60 46 100 50 C60 54 54 60 50 100 C46 60 40 54 0 50 C40 46 46 40 50 0Z"/></svg><svg viewBox="0 0 100 100" style="--x:20%;--y:3%;--size:48px"><path d="M50 0 C54 40 60 46 100 50 C60 54 54 60 50 100 C46 60 40 54 0 50 C40 46 46 40 50 0Z"/></svg><svg viewBox="0 0 100 100" style="--x:22%;--y:8%;--size:25px"><path d="M50 0 C54 40 60 46 100 50 C60 54 54 60 50 100 C46 60 40 54 0 50 C40 46 46 40 50 0Z"/></svg><svg viewBox="0 0 100 100" style="--x:26%;--y:4%;--size:62px"><path d="M50 0 C54 40 60 46 100 50 C60 54 54 60 50 100 C46 60 40 54 0 50 C40 46 46 40 50 0Z"/></svg><svg viewBox="0 0 100 100" style="--x:35%;--y:7%;--size:55px"><path d="M50 0 C54 40 60 46 100 50 C60 54 54 60 50 100 C46 60 40 54 0 50 C40 46 46 40 50 0Z"/></svg><svg viewBox="0 0 100 100" style="--x:37%;--y:29%;--size:28px"><path d="M50 0 C54 40 60 46 100 50 C60 54 54 60 50 100 C46 60 40 54 0 50 C40 46 46 40 50 0Z"/></svg><svg viewBox="0 0 100 100" style="--x:39%;--y:33%;--size:38px"><path d="M50 0 C54 40 60 46 100 50 C60 54 54 60 50 100 C46 60 40 54 0 50 C40 46 46 40 50 0Z"/></svg><svg viewBox="0 0 100 100" style="--x:38%;--y:40%;--size:44px"><path d="M50 0 C54 40 60 46 100 50 C60 54 54 60 50 100 C46 60 40 54 0 50 C40 46 46 40 50 0Z"/></svg><svg viewBox="0 0 100 100" style="--x:65%;--y:12%;--size:55px"><path d="M50 0 C54 40 60 46 100 50 C60 54 54 60 50 100 C46 60 40 54 0 50 C40 46 46 40 50 0Z"/></svg><svg viewBox="0 0 100 100" style="--x:67%;--y:22%;--size:38px"><path d="M50 0 C54 40 60 46 100 50 C60 54 54 60 50 100 C46 60 40 54 0 50 C40 46 46 40 50 0Z"/></svg><svg viewBox="0 0 100 100" style="--x:64%;--y:27%;--size:27px"><path d="M50 0 C54 40 60 46 100 50 C60 54 54 60 50 100 C46 60 40 54 0 50 C40 46 46 40 50 0Z"/></svg><svg viewBox="0 0 100 100" style="--x:66%;--y:31%;--size:46px"><path d="M50 0 C54 40 60 46 100 50 C60 54 54 60 50 100 C46 60 40 54 0 50 C40 46 46 40 50 0Z"/></svg><svg viewBox="0 0 100 100" style="--x:72%;--y:8%;--size:28px"><path d="M50 0 C54 40 60 46 100 50 C60 54 54 60 50 100 C46 60 40 54 0 50 C40 46 46 40 50 0Z"/></svg><svg viewBox="0 0 100 100" style="--x:75%;--y:9%;--size:48px"><path d="M50 0 C54 40 60 46 100 50 C60 54 54 60 50 100 C46 60 40 54 0 50 C40 46 46 40 50 0Z"/></svg><svg viewBox="0 0 100 100" style="--x:73%;--y:26%;--size:32px"><path d="M50 0 C54 40 60 46 100 50 C60 54 54 60 50 100 C46 60 40 54 0 50 C40 46 46 40 50 0Z"/></svg><svg viewBox="0 0 100 100" style="--x:94%;--y:22%;--size:55px"><path d="M50 0 C54 40 60 46 100 50 C60 54 54 60 50 100 C46 60 40 54 0 50 C40 46 46 40 50 0Z"/></svg><svg viewBox="0 0 100 100" style="--x:98%;--y:27%;--size:46px"><path d="M50 0 C54 40 60 46 100 50 C60 54 54 60 50 100 C46 60 40 54 0 50 C40 46 46 40 50 0Z"/></svg><svg viewBox="0 0 100 100" style="--x:89%;--y:42%;--size:34px"><path d="M50 0 C54 40 60 46 100 50 C60 54 54 60 50 100 C46 60 40 54 0 50 C40 46 46 40 50 0Z"/></svg><svg viewBox="0 0 100 100" style="--x:91%;--y:47%;--size:42px"><path d="M50 0 C54 40 60 46 100 50 C60 54 54 60 50 100 C46 60 40 54 0 50 C40 46 46 40 50 0Z"/></svg><svg viewBox="0 0 100 100" style="--x:12%;--y:18%;--size:19px"><path d="M50 0 C54 40 60 46 100 50 C60 54 54 60 50 100 C46 60 40 54 0 50 C40 46 46 40 50 0Z"/></svg><svg viewBox="0 0 100 100" style="--x:84%;--y:14%;--size:19px"><path d="M50 0 C54 40 60 46 100 50 C60 54 54 60 50 100 C46 60 40 54 0 50 C40 46 46 40 50 0Z"/></svg></div>
 <div class="cover-cornerline"><span>Uesugi Atako</span><span>Winter 2026</span></div>
-<h1 id="hero-title" class="cover-title"><span class="sr-only">PORTFOLIO</span>
-<svg viewBox="0 0 2000 650" aria-hidden="true" focusable="false">
-<defs>
-<path id="portfolio-arc" d="M 65,510 Q 1000,-100 1935,510"/>
-<radialGradient id="portfolio-head-fade" cx="50%" cy="45%" r="46%"><stop offset="0" stop-color="white" stop-opacity=".28"/><stop offset="38%" stop-color="white" stop-opacity=".4"/><stop offset="82%" stop-color="white" stop-opacity="1"/></radialGradient>
-<mask id="portfolio-letter-mask"><rect width="2000" height="650" fill="url(#portfolio-head-fade)"/></mask>
-</defs>
-<text mask="url(#portfolio-letter-mask)"><textPath href="#portfolio-arc" startOffset="50%" text-anchor="middle" textLength="1900" lengthAdjust="spacing">PORTFOLIO</textPath></text>
-</svg></h1>
+<h1 id="hero-title" class="hero-nameplate">
+ <span class="hero-greeting">Hello! I AM</span>
+ <span class="hero-main-name hero-name-left">UESUGI</span>
+ <span class="hero-main-name hero-name-right">ATAKO</span>
+ <span class="hero-handle">ph3nolcrystal</span>
+ <span class="hero-jump">321JUMP</span>
+ <span class="hero-chinese" lang="zh-CN">上杉柳絮</span>
+ <span class="hero-japanese" lang="ja">季節は巡った</span>
+ <span class="hero-romanized">KISETSUWAMEGUTTA</span>
+</h1>
 <div class="cover-sigils" aria-hidden="true"><span><svg viewBox="0 0 100 100"><path d="M50 8V92M8 50H92" fill="none" stroke="currentColor" stroke-width="4"/></svg><svg viewBox="0 0 100 100"><path d="M50 8V92M8 50H92" fill="none" stroke="currentColor" stroke-width="4"/></svg><svg viewBox="0 0 100 100"><path d="M50 8V92M8 50H92" fill="none" stroke="currentColor" stroke-width="4"/></svg></span><span><svg viewBox="0 0 100 100"><path d="M50 8V92M8 50H92" fill="none" stroke="currentColor" stroke-width="4"/></svg><svg viewBox="0 0 100 100"><path d="M50 8V92M8 50H92" fill="none" stroke="currentColor" stroke-width="4"/></svg><svg viewBox="0 0 100 100"><path d="M50 8V92M8 50H92" fill="none" stroke="currentColor" stroke-width="4"/></svg></span></div>
 <p class="hand-note">A little world<br>of mine. <span>↙</span></p>
 <div class="character-stage" data-pose="idle"><div class="character-halo" aria-hidden="true"></div><img id="hero-character" src="assets/hero-character.png" alt="Atako character illustration" width="3700" height="2500" fetchpriority="high"><span class="character-caption">CHARACTER SKETCH / PLACEHOLDER</span></div>
