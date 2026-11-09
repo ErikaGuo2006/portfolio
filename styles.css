@@ -908,3 +908,7 @@ body,.hero{background-color:var(--page-base)}
  .hero-name-block-left :is(.hero-main-name,.hero-greeting,.hero-jump){transform-origin:left center}
  .hero-name-block-right :is(.hero-main-name,.hero-handle){transform-origin:right center}
 }
+
+/* Lighter CJK lettering and a unified serif across the cover's top line. */
+.hero h1.hero-nameplate :is(.hero-chinese,.hero-japanese){font-weight:300}
+.hero .cover-kicker{font-family:var(--cover-serif);font-weight:400}
