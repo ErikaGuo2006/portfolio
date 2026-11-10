@@ -927,3 +927,8 @@ body,.hero{background-color:var(--page-base)}
 /* User-supplied Rineka font is reserved for the two largest cover names. */
 @font-face{font-family:CoverRineka;src:url('assets/fonts/rineka.otf') format('opentype');font-weight:400;font-style:normal;font-display:swap}
 .hero h1.hero-nameplate .hero-main-name{font-family:CoverRineka,serif;font-weight:400;transform:none}
+
+/* Enlarge Rineka names and trim their font-box space above the supporting lines. */
+.hero h1.hero-nameplate .hero-main-name{font-size:clamp(98px,11.7vw,234px);line-height:.76;margin-block:.09em -.13em}
+@media(max-width:1000px) and (min-width:681px){.hero h1.hero-nameplate .hero-main-name{font-size:11.5vw}}
+@media(max-width:680px){.hero h1.hero-nameplate .hero-main-name{font-size:16vw;margin-block:.09em -.13em}}
