@@ -923,3 +923,7 @@ body,.hero{background-color:var(--page-base)}
 .liquid-rim{filter:none}
 .cover-stars svg{will-change:auto}
 .cover-paused .cover-stars svg{animation-play-state:paused}
+
+/* User-supplied Rineka font is reserved for the two largest cover names. */
+@font-face{font-family:CoverRineka;src:url('assets/fonts/rineka.otf') format('opentype');font-weight:400;font-style:normal;font-display:swap}
+.hero h1.hero-nameplate .hero-main-name{font-family:CoverRineka,serif;font-weight:400;transform:none}
